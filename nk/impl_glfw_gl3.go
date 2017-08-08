@@ -8,11 +8,39 @@ package nk
 #cgo CFLAGS: -DNK_INCLUDE_FIXED_TYPES -DNK_INCLUDE_STANDARD_IO -DNK_INCLUDE_DEFAULT_ALLOCATOR -DNK_INCLUDE_FONT_BAKING -DNK_INCLUDE_DEFAULT_FONT -DNK_INCLUDE_VERTEX_BUFFER_OUTPUT -Wno-implicit-function-declaration
 #cgo windows LDFLAGS: -Wl,--allow-multiple-definition
 #include <string.h>
+#include <malloc.h>
 
 #define NK_IMPLEMENTATION
 #define NK_GLFW_GL3_IMPLEMENTATION
 
 #include "nuklear.h"
+
+int CountWalk() {
+	int HeapStatus;
+	int running = 1;
+	_HEAPINFO info;
+	info._pentry = 0;
+	int UsedBytes = 0;
+
+	while (running) {
+		HeapStatus = _heapwalk(&info);
+		switch (HeapStatus) {
+			case _HEAPOK:
+			break;
+			case _HEAPEND:
+			running = 0;
+			break;
+			running = 0;
+			continue;
+		}
+
+		if (info._useflag == _USEDENTRY) {
+			UsedBytes += info._size;
+		}
+	}
+	return UsedBytes;
+}
+
 */
 import "C"
 import (
@@ -22,6 +50,10 @@ import (
 
 	"github.com/go-gl/gl/v3.2-core/gl"
 )
+
+func HeapAllocatedBytes() int {
+	return int(C.CountWalk())
+}
 
 func NkPlatformRender(aa AntiAliasing, maxVertexBuffer, maxElementBuffer int) {
 	dev := state.ogl

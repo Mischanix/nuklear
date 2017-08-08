@@ -1,13 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"runtime"
 	"time"
 
+	"github.com/Mischanix/nuklear/nk"
 	"github.com/go-gl/gl/v3.2-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/golang-ui/nuklear/nk"
 	"github.com/xlab/closer"
 )
 
@@ -95,6 +96,10 @@ func gfxMain(win *glfw.Window, ctx *nk.Context, state *State) {
 		nk.WindowBorder|nk.WindowMovable|nk.WindowScalable|nk.WindowMinimizable|nk.WindowTitle)
 
 	if update > 0 {
+		nk.NkLayoutRowDynamic(ctx, 20, 1)
+		{
+			nk.NkLabel(ctx, fmt.Sprintf("%d bytes allocated", nk.HeapAllocatedBytes()), nk.TextLeft)
+		}
 		nk.NkLayoutRowStatic(ctx, 30, 80, 1)
 		{
 			if nk.NkButtonLabel(ctx, "button") > 0 {
