@@ -2754,7 +2754,9 @@ func unpackSDrawVertexLayoutElement(x []DrawVertexLayoutElement) (unpacked *C.st
 	}
 	v0 := *(*[]C.struct_nk_draw_vertex_layout_element)(unsafe.Pointer(h0))
 	for i0 := range x {
-		v0[i0], _ = x[i0].PassValue()
+		var valueAllocs *cgoAllocMap
+		v0[i0], valueAllocs = x[i0].PassValue()
+		allocs.Borrow(valueAllocs)
 	}
 	h := (*sliceHeader)(unsafe.Pointer(&v0))
 	unpacked = (*C.struct_nk_draw_vertex_layout_element)(unsafe.Pointer(h.Data))
@@ -2809,6 +2811,7 @@ func (x *ConvertConfig) PassRef() (*C.struct_nk_convert_config, *cgoAllocMap) {
 	mem82bf4c25 := allocStructNkConvertConfigMemory(1)
 	ref82bf4c25 := (*C.struct_nk_convert_config)(mem82bf4c25)
 	allocs82bf4c25 := new(cgoAllocMap)
+	allocs82bf4c25.Add(mem82bf4c25)
 	var cglobal_alpha_allocs *cgoAllocMap
 	ref82bf4c25.global_alpha, cglobal_alpha_allocs = (C.float)(x.GlobalAlpha), cgoAllocsUnknown
 	allocs82bf4c25.Borrow(cglobal_alpha_allocs)
@@ -3105,6 +3108,7 @@ func (x *DrawVertexLayoutElement) PassRef() (*C.struct_nk_draw_vertex_layout_ele
 	memeb0614d6 := allocStructNkDrawVertexLayoutElementMemory(1)
 	refeb0614d6 := (*C.struct_nk_draw_vertex_layout_element)(memeb0614d6)
 	allocseb0614d6 := new(cgoAllocMap)
+	allocseb0614d6.Add(memeb0614d6)
 	var cattribute_allocs *cgoAllocMap
 	refeb0614d6.attribute, cattribute_allocs = (C.enum_nk_draw_vertex_layout_attribute)(x.Attribute), cgoAllocsUnknown
 	allocseb0614d6.Borrow(cattribute_allocs)
